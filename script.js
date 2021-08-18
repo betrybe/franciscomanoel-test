@@ -76,6 +76,7 @@ async function addCartItem(event) {
   cart.appendChild(createCartItemElement({
     sku, name, salePrice,
   }));
+  localStorage.setItem(sku, JSON.stringify(itemJson));
 }
 
 function removeCart() {
