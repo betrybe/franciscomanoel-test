@@ -91,8 +91,27 @@ function removeCart() {
   }
 }
 
+function loadItemsFromStorage () {
+  Object.keys(localStorage).forEach((key) => {
+    const item = JSON.parse(localStorage.getItem(key));
+    const cart = document.querySelector('.cart__items');
+    const {
+      id: sku,
+      title: name,
+      price: salePrice,
+    } = item;
+
+    cart.appendChild(createCartItemElement({
+      sku,
+      name,
+      salePrice,
+    }));
+  });
+};
+
 window.onload = () => {
   requestAPI(urlAPI);
+  loadItemsFromStorage();
 
   const removeCartButton = document.querySelector('.empty-cart');
   removeCartButton.addEventListener('click', removeCart);
