@@ -1,4 +1,5 @@
 const urlAPI = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+let totalPrice = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,6 +43,10 @@ function ItemSku(sku) {
 function cartItemClickListener(event) {
   event.target.remove();
   localStorage.removeItem(ItemSku(event.target.innerText));
+
+  const price = document.querySelector('.total-price').innerText;
+  const value = event.target.innerText.split('$')[1];
+  priceTotal(-value);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -49,10 +54,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  priceTotal(salePrice);
   return li;
 }
 
 async function requestAPI(url) {
+  const loading = document.querySelector('.items');
+
+  const load = document.createElement('span');
+  load.className = 'loading';
+  load.innerText = 'loading...';
+
+  loading.appendChild(load);
+
   const response = await fetch(url);
   const json = await response.json();
   const items = json.results;
@@ -65,6 +79,7 @@ async function requestAPI(url) {
         ),
         );
   });
+  load.remove();
 }
 
 async function addCartItem(event) {
@@ -91,7 +106,7 @@ function removeCart() {
   }
 }
 
-function loadItemsFromStorage () {
+function loadItemsFromStorage() {
   Object.keys(localStorage).forEach((key) => {
     const item = JSON.parse(localStorage.getItem(key));
     const cart = document.querySelector('.cart__items');
@@ -107,12 +122,18 @@ function loadItemsFromStorage () {
       salePrice,
     }));
   });
-};
+}
+
+function priceTotal(price) {
+  const total = document.querySelector('.total-price');
+  totalPrice = Number(total.innerText);
+  totalPrice += price;
+  total.innerText = totalPrice;
+}
 
 window.onload = () => {
   requestAPI(urlAPI);
   loadItemsFromStorage();
-
   const removeCartButton = document.querySelector('.empty-cart');
   removeCartButton.addEventListener('click', removeCart);
 };
