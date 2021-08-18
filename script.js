@@ -104,6 +104,8 @@ function removeCart() {
   while (items.firstChild) {
     items.removeChild(items.lastChild);
   }
+  const price = document.querySelector('.total-price');
+  price.innerHTML = 0;
 }
 
 function loadItemsFromStorage() {
