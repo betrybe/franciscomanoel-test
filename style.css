@@ -55,3 +55,8 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading {
+  position: absolute;
+  top: 50vh;
+}
